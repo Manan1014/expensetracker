@@ -19,6 +19,7 @@ function Login() {
           console.log("login succesfully");
           localStorage.setItem("authToken", response.headers.authtoken);
           navigate("/");
+          window.location.reload() ;
         })
         .catch((error)=>{
           if(error.response.status === 400){

@@ -6,7 +6,8 @@ const expanseschema = new schema({
     category: { type: String, require: true },
     amount: { type: Number, require: true },
     type: { type: String, require: true },
-    description: { type: String }
+    description: { type: String },
+    date: { type: Date, default: Date.now() }
 })
 const expanse = mongoose.model('expanse', expanseschema);
 module.exports = expanse;

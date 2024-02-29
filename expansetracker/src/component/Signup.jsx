@@ -15,13 +15,13 @@ export default function Signup() {
             } else if (password !== cpassword){
                 alert("Passwords Do Not Match!");
             }else{
-                console.log(name + " " + email+ " " + password);
+                // console.log(name + " " + email+ " " + password);
 
                 await axios.post('/register',{
                   name,email,password
                 })
                 .then(function (response) {
-                  console.log(JSON.stringify(response));
+                  // console.log(JSON.stringify(response));
                   window.location='/login'
                    // console.log(signup);
                 setSubmitted(true);
