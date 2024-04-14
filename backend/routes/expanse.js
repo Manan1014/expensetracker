@@ -2,7 +2,7 @@ const express = require('express');
 const router = express();
 // Require controller modules.
 const expanse = require('../model/expanse');
-
+const sendmail = require("../controller/sendmail");
 router.post('/credit', async(req, res) => {
     let e1 = new expanse({
             id: req.body.id,
@@ -15,10 +15,12 @@ router.post('/credit', async(req, res) => {
         // let e1 = new expanse(id, category, amount, type);
         // console.log(e1);
 
+
     try {
+        const receiverEmail = req.body.email;
+        await sendmail(req, res, receiverEmail, 'Credit Added', e1.amount, e1);
         let save = await e1.save();
         if (save) {
-
             res.status(200).json({ message: "Data added successfully!" });
         } else {
 
@@ -38,8 +40,11 @@ router.post('/debit', async(req, res) => {
         type: "DEBIT",
         description: req.body.description,
         date: req.body.date
-    })
+    });
     try {
+        // Call sendmailFunction before sending the response
+        const receiverEmail = req.body.email; // Assuming you're sending the receiver's email address in the request body
+        await sendmail(req, res, receiverEmail, 'Debit Added', e1.amount, e1);
         let save = await e1.save();
         if (save) {
             res.json({ message: "Data added successfully!" });
@@ -49,7 +54,9 @@ router.post('/debit', async(req, res) => {
     } catch (error) {
         res.status(400).json({ error: "Unable to add data" });
     }
-})
+});
+
+
 
 router.get('/expanse/:id', async(req, res) => {
     let id = req.params.id;
@@ -87,16 +94,20 @@ router.put('/update/:id', async(req, res) => {
         })
 });
 // delete a item by its `id`
-router.delete('/remove/:id', async(req, res) => {
+
+router.delete('/remove', async(req, res) => {
+    const { email, id } = req.body;
     try {
-        const removed = await expanse.deleteOne({ _id: req.params.id })
+        const removed = await expanse.deleteOne({ _id: id });
+        await sendmail(req, res, email, 'deleted', id, id); // Sending email with email and id
         if (removed.deletedCount == 0) {
-            return res.status(404).send(`No entry with the id ${req.params.id}`)
+            return res.status(404).send(`No entry with the id ${id}`);
         } else {
             res.status(200).json(removed);
         }
     } catch (err) {
-        res.status(400).json(err)
+        res.status(400).json(err);
     }
-})
+});
+
 module.exports = router;

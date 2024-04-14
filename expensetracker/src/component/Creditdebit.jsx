@@ -33,8 +33,10 @@ export default function Creditdebit() {
           id:user._id,
           amount:parseFloat(amount),
           category,
-          description
+          description,
+          email: user.email
         }
+        console.log(data);
         axios.post('/debit',data).then((response)=>{
           // console.log(response);
           setamount("");
@@ -62,7 +64,8 @@ export default function Creditdebit() {
           id:user._id,
           amount:parseFloat(amount),
           category:category1,
-          description
+          description,
+          email:user.email
         }
         axios.post('/credit',data).then((response)=>{
           // console.log(response);

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import axios from "axios"
-import {addData,updateData,deleteData} from '../feature/user/userdata'
+import {updateData,deleteData} from '../feature/user/userdata'
 import { useSelector,useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import Update from './Update';
 import { format } from 'date-fns';
 
 export default function Data() {
@@ -13,13 +12,15 @@ export default function Data() {
   // const user = useSelector((state) => state.username);
   const userdata = useSelector((state)=> state.userdata);
   const [data,setData] = useState([]);
+  const user = useSelector((state) => state.username);
   useEffect(()=>{
     setData(userdata)
   },[userdata])
   async function handledelete(_id){
     if(window.confirm('Are you sure to delete this item?')){dispatch(deleteData(_id))}
-    axios.delete(`/remove/${_id}`).then((res)=>{console.log("Delete Successful")}).catch((err)=> console.error(err));
+    axios.delete("remove", { data: { email: user.email, id: _id } }).then((res)=>{console.log("Delete Successful")}).catch((err)=> console.error(err));
   }
+  
   const [isOpen, setIsOpen] = useState(false);
   const[updatedata,setupdatedata]=useState({});
   async function handleupdate(item){
